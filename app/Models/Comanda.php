@@ -10,6 +10,10 @@ class Comanda extends Model
     public $table = "comandes"; // Perque si no agafe el plural de "comanda" com a "comandaS".
     use HasFactory;
 
+    protected $fillable = [
+        'nom',
+    ];
+
     public function plat()
     {
         return $this->belongsToMany(

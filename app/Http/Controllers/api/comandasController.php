@@ -5,6 +5,7 @@ namespace App\Http\Controllers\api;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Comanda;
+use Validator;
 
 class comandasController extends Controller
 {
@@ -45,11 +46,35 @@ class comandasController extends Controller
     public function store(Request $request)
     {
         //
+        //validar camps
+        
         $input = $request->all();
+        $validator = Validator::make($input,
+            [
+                'nom'=>'required|min:3|max:10',
+            ]
+    
+            );
+        if($validator->fails()) {
+            $response = [
+                'success' => false,
+                'message' => "Errors de validació",
+                'data' => $validator->errors(),
+            ];
+            //return $response;
+            return response()->json($response,400);
+        }
+
 
         $comanda = Comanda::create($input);
 
-        return $comanda;
+        $response = [
+            'success' => true,
+            'message' => "Comanda creada correctament",
+            'data' => $comanda,
+        ];
+        //return $response;
+        return response()->json($response,200);
 
         //return $input;
     }
@@ -105,7 +130,54 @@ class comandasController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $comanda = Comanda::find($id);
+        if($comanda==null){
+            
+            $response = [
+                'success' => false,
+                'message' => "Comanda no recuperada",
+                'data' => [],
+            ];
+ 
+            return response()->json($response,404);
+        }
+        
         //
+        $input = $request->all();
+        $validator = Validator::make($input,
+            [
+                'nom'=>'required|min:3|max:10',
+            ]
+    
+            );
+        if($validator->fails()) {
+            
+            $response = [
+                'success' => false,
+                'message' => "Errors de validació",
+                'data' => $validator->errors(),
+            ];
+            //return $response;
+            return response()->json($response,400);
+        }
+
+        //versió 1- rapida pero perillosa
+        $comanda->update($input);
+
+        //versió 2 - segura
+        //$comanda->name = $input->name;
+        //$comanda->save();
+
+        $response = [
+            'success' => true,
+            'message' => "Cmanda actualitzada correctament",
+            'data' => $comanda,
+        ];
+        //return $response;
+        return response()->json($response,200);
+
+        //return $input;
+    
     }
 
     /**

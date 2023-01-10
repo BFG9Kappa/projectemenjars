@@ -22,6 +22,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/taulacomandas', function () {
+    return view('comandes.api.index');
+});
+
 // Auth
 Auth::routes();
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
